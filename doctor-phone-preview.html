@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#102b52">
+<title>DOCTOR PHONE | إدارة المحل</title>
+<style>
+:root{--navy:#102b52;--blue:#1769aa;--sky:#eaf3fb;--bg:#f4f7fb;--ink:#172b45;--muted:#718096;--line:#e3eaf2;--white:#fff;--green:#16845b;--red:#c0392b;--shadow:0 8px 24px #17365d12}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Tahoma,Arial,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:10px;padding:11px 15px;background:var(--blue);color:white;font-weight:700}.secondary{background:#e9f1f9;color:var(--navy)}.danger{background:#fff0ee;color:var(--red)}.muted{color:var(--muted)}.hidden{display:none!important}
+header{background:linear-gradient(120deg,#102b52,#1769aa);color:white;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:46px;height:46px;border-radius:14px;background:#ffffff1c;display:grid;place-items:center;font-size:25px;border:1px solid #ffffff40}.brand h1{font-size:19px;margin:0}.brand small{opacity:.8}
+#app{max-width:1250px;margin:auto;padding:20px}.topline{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.layout{display:grid;grid-template-columns:220px 1fr;gap:18px}.side,.panel,.stat{background:white;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}.side{padding:12px;height:max-content}.nav{display:flex;flex-direction:column;gap:6px}.nav button{background:transparent;color:#41536b;text-align:right}.nav button.active,.nav button:hover{background:var(--sky);color:var(--blue)}
+.content{min-width:0}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}.stat{padding:16px}.stat small{color:var(--muted)}.stat strong{display:block;font-size:23px;margin-top:8px;color:var(--navy)}.panel{padding:18px;margin-bottom:16px}.panel h2{font-size:18px;margin:0 0 14px}.section{display:none}.section.active{display:block}.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}.field label{font-size:13px;color:#53657c}.field input,.field select,.field textarea{width:100%;border:1px solid #d9e2ec;border-radius:10px;padding:11px;background:white;color:var(--ink);min-width:0}.field textarea{min-height:70px}.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:580px}th,td{padding:11px 9px;border-bottom:1px solid var(--line);text-align:right;font-size:13px}th{color:#62748a;background:#f8fafc}td button{padding:7px 10px;font-size:12px}.pill{display:inline-block;border-radius:30px;padding:5px 9px;background:#edf4fb;color:#245d91;font-size:12px}.empty{text-align:center;padding:22px;color:var(--muted)}.notice{padding:11px 13px;border-radius:10px;background:#fff7df;color:#795b12;font-size:13px;margin-bottom:14px}.login{max-width:420px;margin:8vh auto;padding:26px;background:white;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}.login h2{margin-top:0}.login p{color:var(--muted);font-size:13px;line-height:1.7}.status{font-size:12px;color:#d9e9f8}.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.nav{display:grid;grid-template-columns:repeat(3,1fr)}.nav button{text-align:center;padding:10px 5px;font-size:12px}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){#app{padding:12px}.panel{padding:14px}.grid2{grid-template-columns:1fr}.stats{gap:8px}.stat{padding:12px}.stat strong{font-size:19px}header{padding:14px}.brand h1{font-size:16px}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="logo">📱</div><div><h1>DOCTOR PHONE</h1><small>نظام إدارة المحل والصيانة</small></div></div><div class="toolbar"><span id="connection" class="status">غير متصل</span><button id="logout" class="secondary hidden">تسجيل الخروج</button></div></header>
+<div id="loginView" class="login">
+<h2>تسجيل الدخول</h2><p>ادخل بحساب Firebase الذي أنشأته للمحل. بيانات الدخول لا تُحفظ داخل هذا الملف.</p>
+<div class="field"><label>البريد الإلكتروني</label><input id="email" type="email" autocomplete="username" placeholder="name@example.com"></div>
+<div class="field"><label>كلمة المرور</label><input id="password" type="password" autocomplete="current-password" placeholder="••••••••"></div>
+<button id="loginBtn" style="width:100%">دخول</button><p id="loginMsg" role="status"></p>
+</div>
+<div id="app" class="hidden">
+<div class="topline"><div><strong id="welcome">لوحة التحكم</strong><div class="muted" style="font-size:13px;margin-top:5px">إدارة المبيعات والمخزون والصيانة</div></div><span class="pill">العملة: دينار تونسي (د.ت)</span></div>
+<div class="layout">
+<aside class="side"><nav class="nav">
+<button class="active" data-tab="dashboard">🏠 الرئيسية</button><button data-tab="products">📦 المخزون</button><button data-tab="sales">🧾 المبيعات</button><button data-tab="customers">👥 الحرفاء</button><button data-tab="repairs">🛠️ الصيانة</button><button data-tab="expenses">💸 المصاريف</button>
+</nav></aside>
+<main class="content">
+<section id="dashboard" class="section active">
+<div class="stats"><div class="stat"><small>عدد المنتجات</small><strong id="sProducts">0</strong></div><div class="stat"><small>عدد المبيعات</small><strong id="sSales">0</strong></div><div class="stat"><small>مداخيل المبيعات</small><strong id="sRevenue">0 د.ت</strong></div><div class="stat"><small>مصاريف مسجلة</small><strong id="sExpenses">0 د.ت</strong></div></div>
+<div class="panel"><h2>ملخص النشاط</h2><p class="muted">الأرقام تُحدّث تلقائياً عند اتصال التطبيق بقاعدة البيانات.</p><div id="summary"></div></div>
+<div class="notice">مهم: هذه نسخة أولية عملية. جرّبها ببيانات تجريبية أولاً، ولا ترفعها مكان موقعك الحالي قبل اختبارها والتأكد من ظهور البيانات على جهاز ثانٍ.</div>
+</section>
+<section id="products" class="section">
+<div class="panel"><h2>إضافة منتج / إدخال مخزون</h2><div class="grid2">
+<div class="field"><label>اسم المنتج</label><input id="pName" placeholder="مثال: شاحن Type-C"></div><div class="field"><label>الكمية</label><input id="pQty" type="number" min="0" value="1"></div>
+<div class="field"><label>سعر الشراء (د.ت)</label><input id="pCost" type="number" min="0" step=".001" placeholder="0"></div><div class="field"><label>سعر البيع (د.ت)</label><input id="pPrice" type="number" min="0" step=".001" placeholder="0"></div>
+</div><button id="addProduct">حفظ المنتج</button><span id="productMsg" class="muted"></span></div>
+<div class="panel"><h2>قائمة المخزون</h2><div class="tablewrap"><table><thead><tr><th>المنتج</th><th>الكمية</th><th>الشراء</th><th>البيع</th></tr></thead><tbody id="productsRows"></tbody></table></div></div>
+</section>
+<section id="sales" class="section">
+<div class="panel"><h2>تسجيل عملية بيع</h2><div class="grid2">
+<div class="field"><label>المنتج</label><select id="saleProduct"></select></div><div class="field"><label>الكمية</label><input id="saleQty" type="number" min="1" value="1"></div>
+<div class="field"><label>تخفيض (د.ت)</label><input id="saleDiscount" type="number" min="0" step=".001" value="0"></div><div class="field"><label>اسم الحريف (اختياري)</label><input id="saleCustomer" placeholder="اسم الحريف"></div>
+</div><button id="addSale">تأكيد البيع</button><span id="saleMsg" class="muted"></span></div>
+<div class="panel"><h2>آخر المبيعات</h2><div class="tablewrap"><table><thead><tr><th>التاريخ</th><th>المنتج</th><th>الكمية</th><th>التخفيض</th><th>الصافي</th></tr></thead><tbody id="salesRows"></tbody></table></div></div>
+</section>
+<section id="customers" class="section">
+<div class="panel"><h2>إضافة حريف</h2><div class="grid2"><div class="field"><label>الاسم</label><input id="cName"></div><div class="field"><label>الهاتف</label><input id="cPhone" type="tel"></div></div><button id="addCustomer">حفظ الحريف</button></div>
+<div class="panel"><h2>الحرفاء</h2><div class="tablewrap"><table><thead><tr><th>الاسم</th><th>الهاتف</th></tr></thead><tbody id="customersRows"></tbody></table></div></div>
+</section>
+<section id="repairs" class="section">
+<div class="panel"><h2>تسجيل جهاز للصيانة</h2><div class="grid2">
+<div class="field"><label>اسم الحريف</label><input id="rCustomer"></div><div class="field"><label>هاتف الحريف</label><input id="rPhone"></div>
+<div class="field"><label>نوع الهاتف</label><input id="rDevice" placeholder="Samsung A..."></div><div class="field"><label>IMEI / الرقم التسلسلي</label><input id="rImei"></div>
+<div class="field"><label>العطل</label><input id="rIssue"></div><div class="field"><label>الحالة</label><select id="rStatus"><option>في انتظار الفحص</option><option>قيد الإصلاح</option><option>جاهز</option><option>تم التسليم</option></select></div>
+</div><button id="addRepair">حفظ بطاقة الصيانة</button></div>
+<div class="panel"><h2>متابعة الصيانة</h2><div class="tablewrap"><table><thead><tr><th>الحريف</th><th>الجهاز</th><th>IMEI</th><th>العطل</th><th>الحالة</th><th>تحديث</th></tr></thead><tbody id="repairsRows"></tbody></table></div></div>
+</section>
+<section id="expenses" class="section">
+<div class="panel"><h2>تسجيل مصروف</h2><div class="grid2"><div class="field"><label>بيان المصروف</label><input id="eName" placeholder="كراء، كهرباء..."></div><div class="field"><label>المبلغ (د.ت)</label><input id="eAmount" type="number" min="0" step=".001"></div></div><button id="addExpense">حفظ المصروف</button></div>
+<div class="panel"><h2>المصاريف</h2><div class="tablewrap"><table><thead><tr><th>التاريخ</th><th>البيان</th><th>المبلغ</th></tr></thead><tbody id="expensesRows"></tbody></table></div></div>
+</section>
+</main></div></div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+ apiKey:"AIzaSyBrqiALfpGYMgSeJ49bUBfDNJNXGhcCn6k",
+ authDomain:"doctor-phone1.firebaseapp.com",
+ projectId:"doctor-phone1",
+ storageBucket:"doctor-phone1.firebasestorage.app",
+ messagingSenderId:"1028412969481",
+ appId:"1:1028412969481:web:8511f7a767817f81429ed8",
+ measurementId:"G-Q6ERR1NGW0"
+};
+const app=initializeApp(firebaseConfig), auth=getAuth(app), db=getFirestore(app);
+const $=id=>document.getElementById(id), money=n=>(Number(n)||0).toFixed(3)+" د.ت";
+let data={products:[],sales:[],customers:[],repairs:[],expenses:[]},unsubs=[];
+const say=(id,msg)=>$(id).textContent=msg;
+function safe(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function path(name){return collection(db,"users",auth.currentUser.uid,name)}
+function date(v){if(!v)return "—";const d=v.toDate?v.toDate():new Date(v);return isNaN(d)?"—":d.toLocaleString("ar-TN");}
+function listen(){
+ unsubs.forEach(f=>f());unsubs=[];
+ for(const name of Object.keys(data)){
+  const q=query(path(name),orderBy("createdAt","desc"));
+  unsubs.push(onSnapshot(q,s=>{data[name]=s.docs.map(x=>({id:x.id,...x.data()}));render();},e=>{console.error(e);$("connection").textContent="خطأ في قاعدة البيانات";}));
+ }
+ $("connection").textContent="متصل بالسحابة";
+}
+function rows(id,items,fn){$(id).innerHTML=items.length?items.map(fn).join(""):'<tr><td colspan="8" class="empty">لا توجد بيانات بعد</td></tr>'}
+function render(){
+ $("sProducts").textContent=data.products.length;
+ $("sSales").textContent=data.sales.length;
+ $("sRevenue").textContent=money(data.sales.filter(x=>!x.cancelled).reduce((a,x)=>a+(+x.net||0),0));
+ $("sExpenses").textContent=money(data.expenses.reduce((a,x)=>a+(+x.amount||0),0));
+ $("summary").textContent=`عدد الحرفاء: ${data.customers.length} — أجهزة الصيانة: ${data.repairs.length}`;
+ rows("productsRows",data.products,p=>`<tr><td>${safe(p.name)}</td><td>${p.qty}</td><td>${money(p.cost)}</td><td>${money(p.price)}</td></tr>`);
+ $("saleProduct").innerHTML='<option value="">اختر منتجاً</option>'+data.products.map(p=>`<option value="${p.id}">${safe(p.name)} — متوفر ${p.qty} — ${money(p.price)}</option>`).join("");
+ rows("salesRows",data.sales,s=>`<tr><td>${date(s.createdAt)}</td><td>${safe(s.productName)}</td><td>${s.qty}</td><td>${money(s.discount)}</td><td>${money(s.net)}</td></tr>`);
+ rows("customersRows",data.customers,c=>`<tr><td>${safe(c.name)}</td><td>${safe(c.phone)}</td></tr>`);
+ rows("repairsRows",data.repairs,r=>`<tr><td>${safe(r.customer)}</td><td>${safe(r.device)}</td><td>${safe(r.imei)}</td><td>${safe(r.issue)}</td><td><span class="pill">${safe(r.status)}</span></td><td><select data-repair="${r.id}"><option>${safe(r.status)}</option><option>في انتظار الفحص</option><option>قيد الإصلاح</option><option>جاهز</option><option>تم التسليم</option></select></td></tr>`);
+ rows("expensesRows",data.expenses,e=>`<tr><td>${date(e.createdAt)}</td><td>${safe(e.name)}</td><td>${money(e.amount)}</td></tr>`);
+}
+document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".section").forEach(x=>x.classList.toggle("active",x.id===b.dataset.tab));}));
+$("loginBtn").onclick=async()=>{say("loginMsg","جارٍ تسجيل الدخول...");try{await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value);say("loginMsg","");}catch(e){say("loginMsg","تعذر الدخول: "+e.message);}};
+$("logout").onclick=()=>signOut(auth);
+onAuthStateChanged(auth,user=>{if(user){$("loginView").classList.add("hidden");$("app").classList.remove("hidden");$("logout").classList.remove("hidden");$("welcome").textContent="مرحباً بك في DOCTOR PHONE";listen();}else{unsubs.forEach(f=>f());$("loginView").classList.remove("hidden");$("app").classList.add("hidden");$("logout").classList.add("hidden");$("connection").textContent="غير متصل";}});
+$("addProduct").onclick=async()=>{const name=$("pName").value.trim(),qty=Number($("pQty").value),cost=Number($("pCost").value),price=Number($("pPrice").value);if(!name||qty<0||cost<0||price<0)return say("productMsg","تحقق من البيانات");try{await addDoc(path("products"),{name,qty,cost,price,createdAt:serverTimestamp()});["pName","pCost","pPrice"].forEach(x=>$(x).value="");say("productMsg","تم الحفظ");}catch(e){say("productMsg",e.message);}};
+$("addSale").onclick=async()=>{const id=$("saleProduct").value,qty=Number($("saleQty").value),discount=Number($("saleDiscount").value);if(!id||qty<1||discount<0)return say("saleMsg","أكمل بيانات البيع");try{const p=data.products.find(x=>x.id===id);if(!p)throw Error("المنتج غير موجود");if(p.qty<qty)throw Error("الكمية المتوفرة غير كافية");const net=Math.max(0,p.price*qty-discount);await runTransaction(db,async tx=>{const ref=doc(db,"users",auth.currentUser.uid,"products",id),snap=await tx.get(ref);if(!snap.exists()||Number(snap.data().qty)<qty)throw Error("المخزون غير كافٍ");tx.update(ref,{qty:Number(snap.data().qty)-qty});const saleRef=doc(path("sales"));tx.set(saleRef,{productId:id,productName:p.name,qty,unitPrice:p.price,cost:p.cost,discount,net,customer:$("saleCustomer").value.trim(),createdAt:serverTimestamp()});});say("saleMsg","تم تسجيل البيع وتحديث المخزون");$("saleDiscount").value="0";$("saleCustomer").value="";}catch(e){say("saleMsg",e.message);}};
+$("addCustomer").onclick=async()=>{const name=$("cName").value.trim(),phone=$("cPhone").value.trim();if(!name)return;try{await addDoc(path("customers"),{name,phone,createdAt:serverTimestamp()});$("cName").value=$("cPhone").value="";}catch(e){alert(e.message);}};
+$("addRepair").onclick=async()=>{const customer=$("rCustomer").value.trim(),device=$("rDevice").value.trim();if(!customer||!device){alert("أدخل اسم الحريف ونوع الهاتف");return;}try{await addDoc(path("repairs"),{customer,phone:$("rPhone").value.trim(),device,imei:$("rImei").value.trim(),issue:$("rIssue").value.trim(),status:$("rStatus").value,createdAt:serverTimestamp()});["rCustomer","rPhone","rDevice","rImei","rIssue"].forEach(x=>$(x).value="");}catch(e){alert(e.message);}};
+$("repairsRows").addEventListener("change",async e=>{const id=e.target.dataset.repair;if(!id)return;try{const {updateDoc}=await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");await updateDoc(doc(db,"users",auth.currentUser.uid,"repairs",id),{status:e.target.value,updatedAt:serverTimestamp()});}catch(err){alert(err.message);}});
+$("addExpense").onclick=async()=>{const name=$("eName").value.trim(),amount=Number($("eAmount").value);if(!name||amount<=0){alert("أدخل البيان والمبلغ");return;}try{await addDoc(path("expenses"),{name,amount,createdAt:serverTimestamp()});$("eName").value=$("eAmount").value="";}catch(e){alert(e.message);}};
+</script>
+</body></html>
